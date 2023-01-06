@@ -134,11 +134,11 @@ class SegmentSelector {
   //    1      1      1      1   =>   no                  0
   static List<int> xorSelectTable = [0, 2, 1, 0, 2, 0, 0, 1, 1, 0, 0, 2, 0, 1, 2, 0];
 
-  static SegmentList union(SegmentList segments, BuildLog buildLog) {
+  static SegmentList union(SegmentList segments, BuildLog? buildLog) {
     return select(segments, unionSelectTable, buildLog);
   }
 
-  static SegmentList difference(SegmentList segments, BuildLog buildLog) {
+  static SegmentList difference(SegmentList segments, BuildLog? buildLog) {
     return select(segments, differenceSelectTable, buildLog);
   }
 
@@ -146,11 +146,11 @@ class SegmentSelector {
     return select(segments, intersectSelectTable, buildLog);
   }
 
-  static SegmentList differenceRev(SegmentList segments, BuildLog buildLog) {
+  static SegmentList differenceRev(SegmentList segments, BuildLog? buildLog) {
     return select(segments, differenceRevSelectTable, buildLog);
   }
 
-  static SegmentList xor(SegmentList segments, BuildLog buildLog) {
+  static SegmentList xor(SegmentList segments, BuildLog? buildLog) {
     return select(segments, xorSelectTable, buildLog);
   }
 }
