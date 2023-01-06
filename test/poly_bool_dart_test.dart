@@ -1,12 +1,11 @@
-
-import 'package:flutter_test/flutter_test.dart';
 import 'package:dart_jts/dart_jts.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:poly_bool_dart/polybool.dart';
 import 'package:poly_bool_dart/types.dart';
 
 void main() {
   test('basic_test', () {
-
     // Note you can use Multipolygon also :)
 
     RegionPolygon poly1 = RegionPolygon(regions: [
@@ -39,15 +38,17 @@ void main() {
       'differenceRev': PolyBool().polygon(PolyBool().selectDifferenceRev(comb)),
       'xor': PolyBool().polygon(PolyBool().selectXor(comb))
     };
-    print(result['union']!.regions);
-    print('*********');
-    print(result['intersect']!.regions);
-    print('*********');
-    print(result['difference']!.regions);
-    print('*********');
-    print(result['differenceRev']!.regions);
-    print('*********');
-    print(result['xor']!.regions);
-    print('*********');
+    if (kDebugMode) {
+      print(result['union']!.regions);
+      print('*********');
+      print(result['intersect']!.regions);
+      print('*********');
+      print(result['difference']!.regions);
+      print('*********');
+      print(result['differenceRev']!.regions);
+      print('*********');
+      print(result['xor']!.regions);
+      print('*********');
+    }
   });
 }

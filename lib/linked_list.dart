@@ -1,11 +1,11 @@
-import 'package:dart_jts/dart_jts.dart' as JTS;
+import 'package:dart_jts/dart_jts.dart' as jts;
 
 import 'epsilon.dart';
 import 'types.dart';
 
 class EventNode {
   bool isStart;
-  JTS.Coordinate? pt;
+  jts.Coordinate? pt;
   Segment? seg;
   bool primary;
   EventNode? other;
@@ -49,7 +49,7 @@ class StatusNode {
 }
 
 class StatusLinkedList {
-  StatusNode? root = new StatusNode();
+  StatusNode? root = StatusNode();
 
   StatusNode? get head {
     return root?.next;
@@ -83,7 +83,7 @@ class StatusLinkedList {
     var prev = surrounding.prev;
     var here = surrounding.here;
 
-    var node = new StatusNode(ev: ev);
+    var node = StatusNode(ev: ev);
 
     node.prev = prev;
     node.next = here;
@@ -128,12 +128,12 @@ class EventLinkedList {
     return root.next == null;
   }
 
-  void insertBefore(EventNode node, JTS.Coordinate other_pt) {
+  void insertBefore(EventNode node, jts.Coordinate otherPt) {
     var last = root;
     var here = root.next;
 
     while (here != null) {
-      if (insertBeforePredicate(here, node, other_pt)) {
+      if (insertBeforePredicate(here, node, otherPt)) {
         node.prev = here.prev;
         node.next = here;
         here.prev!.next = node;
@@ -151,14 +151,14 @@ class EventLinkedList {
     node.next = null;
   }
 
-  bool insertBeforePredicate(EventNode here, EventNode ev, JTS.Coordinate other_pt) {
+  bool insertBeforePredicate(EventNode here, EventNode ev, jts.Coordinate otherPt) {
     // should ev be inserted before here?
-    var comp = eventCompare(ev.isStart, ev.pt!, other_pt, here.isStart, here.pt!, here.other!.pt!);
+    var comp = eventCompare(ev.isStart, ev.pt!, otherPt, here.isStart, here.pt!, here.other!.pt!);
 
     return comp < 0;
   }
 
-  int eventCompare(bool p1_isStart, JTS.Coordinate p1_1, JTS.Coordinate p1_2, bool p2_isStart, JTS.Coordinate p2_1, JTS.Coordinate p2_2) {
+  int eventCompare(bool p1IsStart, jts.Coordinate p1_1, jts.Coordinate p1_2, bool p2IsStart, jts.Coordinate p2_1, jts.Coordinate p2_2) {
     // compare the selected points first
     // compare the selected points first
     var comp = Epsilon().pointsCompare(p1_1, p2_1);
@@ -166,17 +166,19 @@ class EventLinkedList {
 
     // the selected points are the same
 
-    if (Epsilon().pointsSame(p1_2, p2_2)) // if the non-selected points are the same too...
-      return 0; // then the segments are equal
+    if (Epsilon().pointsSame(p1_2, p2_2)) {
+      return 0;
+    } // then the segments are equal
 
-    if (p1_isStart != p2_isStart) // if one is a start and the other isn't...
-      return p1_isStart ? 1 : -1; // favor the one that isn't the start
+    if (p1IsStart != p2IsStart) {
+      return p1IsStart ? 1 : -1;
+    } // favor the one that isn't the start
 
     // otherwise, we'll have to calculate which one is below the other manually
     return Epsilon().pointAboveOrOnLine(
             p1_2,
-            p2_isStart ? p2_1 : p2_2, // order matters
-            p2_isStart ? p2_2 : p2_1)
+            p2IsStart ? p2_1 : p2_2, // order matters
+            p2IsStart ? p2_2 : p2_1)
         ? 1
         : -1;
   }

@@ -1,4 +1,5 @@
 // MIT License
+import 'build_log.dart';
 import 'intersector.dart';
 import 'segment_chainer.dart';
 import 'segment_selector.dart';
@@ -7,10 +8,10 @@ import 'types.dart';
 typedef Selector = SegmentList Function(CombinedSegmentLists);
 
 class PolyBool {
-  var log;
+  late BuildLog log;
 
   SegmentList segments(RegionPolygon poly) {
-    var i = new Intersecter(true);
+    var i = Intersecter(true);
 
     for (var region in poly.regions) {
       i.addRegion(region);
@@ -23,11 +24,11 @@ class PolyBool {
   }
 
   CombinedSegmentLists combine(SegmentList segments1, SegmentList segments2) {
-    var i = new Intersecter(
+    var i = Intersecter(
       false,
     );
 
-    return new CombinedSegmentLists(
+    return CombinedSegmentLists(
         combined: i.calculateXD(segments1, segments1.inverted, segments2, segments2.inverted), inverted1: segments1.inverted, inverted2: segments2.inverted);
   }
 
@@ -71,9 +72,9 @@ class PolyBool {
 
   RegionPolygon polygon(SegmentList segments) {
     //missing log
-    var chain = new SegmentChainer().chain(segments);
+    var chain = SegmentChainer().chain(segments);
 
-    return new RegionPolygon(regions: chain, inverted: segments.inverted);
+    return RegionPolygon(regions: chain, inverted: segments.inverted);
   }
 
   RegionPolygon union(RegionPolygon poly1, RegionPolygon poly2) {

@@ -9,7 +9,7 @@ class SegmentSelector {
   static select(SegmentList segments, selection, BuildLog? buildLog) {
     var result = SegmentList();
 
-    segments.forEach((seg) {
+    for (var seg in segments) {
       var index = (seg.myFill.above ? 8 : 0) +
           (seg.myFill.below! ? 4 : 0) +
           ((seg.otherFill != null && seg.otherFill!.above) ? 2 : 0) +
@@ -29,7 +29,7 @@ class SegmentSelector {
         // copy the segment to the results, while also calculating the fill status
 
       }
-    });
+    }
 
     return result;
   }
@@ -52,7 +52,7 @@ class SegmentSelector {
   //    1      1      0      1   =>   no                  0
   //    1      1      1      0   =>   no                  0
   //    1      1      1      1   =>   no                  0
-  static List<int> union_select_table = [0, 2, 1, 0, 2, 2, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0];
+  static List<int> unionSelectTable = [0, 2, 1, 0, 2, 2, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0];
 
   // primary & secondary
   // above1 below1 above2 below2    Keep?               Value
@@ -72,7 +72,7 @@ class SegmentSelector {
   //    1      1      0      1   =>   yes filled below    2
   //    1      1      1      0   =>   yes filled above    1
   //    1      1      1      1   =>   no                  0
-  static List<int> intersect_select_table = [0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 1, 1, 0, 2, 1, 0];
+  static List<int> intersectSelectTable = [0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 1, 1, 0, 2, 1, 0];
 
   // primary - secondary
   // above1 below1 above2 below2    Keep?               Value
@@ -92,7 +92,7 @@ class SegmentSelector {
   //    1      1      0      1   =>   yes filled above    1
   //    1      1      1      0   =>   yes filled below    2
   //    1      1      1      1   =>   no                  0
-  static List<int> difference_select_table = [0, 0, 0, 0, 2, 0, 2, 0, 1, 1, 0, 0, 0, 1, 2, 0];
+  static List<int> differenceSelectTable = [0, 0, 0, 0, 2, 0, 2, 0, 1, 1, 0, 0, 0, 1, 2, 0];
 
   // secondary - primary
   // above1 below1 above2 below2    Keep?               Value
@@ -112,7 +112,7 @@ class SegmentSelector {
   //    1      1      0      1   =>   no                  0
   //    1      1      1      0   =>   no                  0
   //    1      1      1      1   =>   no                  0
-  static List<int> differenceRev_select_table = [0, 2, 1, 0, 0, 0, 1, 1, 0, 2, 0, 2, 0, 0, 0, 0];
+  static List<int> differenceRevSelectTable = [0, 2, 1, 0, 0, 0, 1, 1, 0, 2, 0, 2, 0, 0, 0, 0];
 
   // primary ^ secondary
   // above1 below1 above2 below2    Keep?               Value
@@ -132,25 +132,25 @@ class SegmentSelector {
   //    1      1      0      1   =>   yes filled above    1
   //    1      1      1      0   =>   yes filled below    2
   //    1      1      1      1   =>   no                  0
-  static List<int> xor_select_table = [0, 2, 1, 0, 2, 0, 0, 1, 1, 0, 0, 2, 0, 1, 2, 0];
+  static List<int> xorSelectTable = [0, 2, 1, 0, 2, 0, 0, 1, 1, 0, 0, 2, 0, 1, 2, 0];
 
   static SegmentList union(SegmentList segments, BuildLog buildLog) {
-    return select(segments, union_select_table, buildLog);
+    return select(segments, unionSelectTable, buildLog);
   }
 
   static SegmentList difference(SegmentList segments, BuildLog buildLog) {
-    return select(segments, difference_select_table, buildLog);
+    return select(segments, differenceSelectTable, buildLog);
   }
 
   static SegmentList intersect(SegmentList segments, BuildLog? buildLog) {
-    return select(segments, intersect_select_table, buildLog);
+    return select(segments, intersectSelectTable, buildLog);
   }
 
   static SegmentList differenceRev(SegmentList segments, BuildLog buildLog) {
-    return select(segments, differenceRev_select_table, buildLog);
+    return select(segments, differenceRevSelectTable, buildLog);
   }
 
   static SegmentList xor(SegmentList segments, BuildLog buildLog) {
-    return select(segments, xor_select_table, buildLog);
+    return select(segments, xorSelectTable, buildLog);
   }
 }

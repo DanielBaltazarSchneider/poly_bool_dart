@@ -1,4 +1,4 @@
-import 'package:dart_jts/dart_jts.dart' as JTS;
+import 'package:dart_jts/dart_jts.dart' as jts;
 import 'package:quiver/collection.dart';
 
 import 'linked_list.dart';
@@ -14,7 +14,7 @@ class Transition {
 }
 
 class Intersection {
-  static Intersection Empty = new Intersection();
+  static Intersection empty = Intersection();
 
 //  alongA and alongB will each be one of: -2, -1, 0, 1, 2
 //
@@ -29,7 +29,7 @@ class Intersection {
   /// <summary>
   /// where the intersection point is at
   /// </summary>
-  JTS.Coordinate? pt;
+  jts.Coordinate? pt;
 
   /// <summary>
   /// where intersection point is along A
@@ -45,7 +45,7 @@ class Intersection {
 }
 
 class RegionPolygon {
-  List<List<JTS.Coordinate>> regions;
+  List<List<jts.Coordinate>> regions;
   bool inverted;
 
   RegionPolygon({this.regions = const [], this.inverted = false});
@@ -55,6 +55,7 @@ class SegmentList extends DelegatingList<Segment> {
   final List<Segment> _segments = [];
   bool inverted = false;
 
+  @override
   List<Segment> get delegate => _segments;
 
 // custom methods
@@ -68,20 +69,14 @@ class CombinedSegmentLists {
   CombinedSegmentLists({required this.combined, this.inverted1 = false, this.inverted2 = false});
 }
 
-// class PointList extends DelegatingList<JTS.Coordinate> {
-//   final List<JTS.Coordinate> _points = [];
-//
-//   List<JTS.Coordinate> get delegate => _points;
-// }
-
 class Segment {
   int id = -1;
-  JTS.Coordinate start;
-  JTS.Coordinate end;
+  jts.Coordinate start;
+  jts.Coordinate end;
   SegmentFill myFill;
   SegmentFill? otherFill;
 
   Segment({this.id = -1, required this.start, required this.end, required this.myFill, this.otherFill}) {
-    if (myFill == null) myFill = SegmentFill();
+    myFill;
   }
 }
