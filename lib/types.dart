@@ -1,5 +1,3 @@
-//@dart=2.9
-
 import 'package:dart_jts/dart_jts.dart' as JTS;
 import 'package:quiver/collection.dart';
 
@@ -7,10 +5,10 @@ import 'linked_list.dart';
 import 'segment_fill.dart';
 
 class Transition {
-  EventNode before;
-  EventNode after;
-  StatusNode prev;
-  StatusNode here;
+  EventNode? before;
+  EventNode? after;
+  StatusNode? prev;
+  StatusNode? here;
 
   Transition({this.before, this.after, this.prev, this.here});
 }
@@ -31,17 +29,17 @@ class Intersection {
   /// <summary>
   /// where the intersection point is at
   /// </summary>
-  JTS.Coordinate pt;
+  JTS.Coordinate? pt;
 
   /// <summary>
   /// where intersection point is along A
   /// </summary>
-  double alongA;
+  double? alongA;
 
   /// <summary>
   /// where intersection point is along B
   /// </summary>
-  double alongB;
+  double? alongB;
 
   Intersection({this.alongA, this.alongB, this.pt});
 }
@@ -50,7 +48,7 @@ class RegionPolygon {
   List<List<JTS.Coordinate>> regions;
   bool inverted;
 
-  RegionPolygon({this.regions, this.inverted = false});
+  RegionPolygon({this.regions = const [], this.inverted = false});
 }
 
 class SegmentList extends DelegatingList<Segment> {
@@ -67,8 +65,7 @@ class CombinedSegmentLists {
   bool inverted1;
   bool inverted2;
 
-  CombinedSegmentLists(
-      {this.combined, this.inverted1 = false, this.inverted2 = false});
+  CombinedSegmentLists({required this.combined, this.inverted1 = false, this.inverted2 = false});
 }
 
 // class PointList extends DelegatingList<JTS.Coordinate> {
@@ -82,9 +79,9 @@ class Segment {
   JTS.Coordinate start;
   JTS.Coordinate end;
   SegmentFill myFill;
-  SegmentFill otherFill;
+  SegmentFill? otherFill;
 
-  Segment({this.id = -1, this.start, this.end, this.myFill, this.otherFill}) {
+  Segment({this.id = -1, required this.start, required this.end, required this.myFill, this.otherFill}) {
     if (myFill == null) myFill = SegmentFill();
   }
 }

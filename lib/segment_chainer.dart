@@ -1,17 +1,14 @@
-//@dart=2.11
 import 'package:dart_jts/dart_jts.dart' as JTS;
-
-
 
 import 'epsilon.dart';
 import 'types.dart';
 
 class SegmentChainer {
-  List<List<JTS.Coordinate>> chains;
-  List<List<JTS.Coordinate>> regions;
-  Match first_match;
-  Match second_match;
-  Match next_match;
+  List<List<JTS.Coordinate>> chains = [];
+  List<List<JTS.Coordinate>> regions = [];
+  Match? first_match;
+  Match? second_match;
+  Match? next_match;
 
   List<List<JTS.Coordinate>> chain(SegmentList segments) {
     this.chains = [];
@@ -22,8 +19,7 @@ class SegmentChainer {
       var pt2 = seg.end;
 
       if (Epsilon().pointsSame(pt1, pt2)) {
-        print(
-            "PolyBool: Warning: Zero-length segment detected; your epsilon is probably too small or too large");
+        print("PolyBool: Warning: Zero-length segment detected; your epsilon is probably too small or too large");
         continue;
       }
 
@@ -33,8 +29,7 @@ class SegmentChainer {
 
       first_match = Match(index: 0, matches_head: false, matches_pt1: false);
 
-      second_match =
-          new Match(index: 0, matches_head: false, matches_pt1: false);
+      second_match = new Match(index: 0, matches_head: false, matches_pt1: false);
 
       next_match = first_match;
 
@@ -80,12 +75,9 @@ class SegmentChainer {
         // add the other point to the apporpriate end, and check to see if we've closed the
         // chain into a loop
 
-        var index = first_match.index;
-        var pt = first_match.matches_pt1
-            ? pt2
-            : pt1; // if we matched pt1, then we add pt2, etc
-        var addToHead = first_match
-            .matches_head; // if we matched at head, then add to the head
+        var index = first_match!.index;
+        var pt = first_match!.matches_pt1 ? pt2 : pt1; // if we matched pt1, then we add pt2, etc
+        var addToHead = first_match!.matches_head; // if we matched at head, then add to the head
 
         var chain = chains[index];
         var grow = addToHead ? chain[0] : chain[chain.length - 1];
@@ -153,17 +145,16 @@ class SegmentChainer {
 
       // otherwise, we matched two chains, so we need to combine those chains together
 
-      var F = first_match.index;
-      var S = second_match.index;
+      var F = first_match!.index;
+      var S = second_match!.index;
 
       // if (buildLog != null) {
       //   buildLog.chainConnect(F, S);
       // }
 
-      var reverseF = chains[F].length <
-          chains[S].length; // reverse the shorter chain, if needed
-      if (first_match.matches_head) {
-        if (second_match.matches_head) {
+      var reverseF = chains[F].length < chains[S].length; // reverse the shorter chain, if needed
+      if (first_match!.matches_head) {
+        if (second_match!.matches_head) {
           if (reverseF) {
             // <<<< F <<<< --- >>>> S >>>>
             reverseChain(F);
@@ -182,7 +173,7 @@ class SegmentChainer {
           appendChain(S, F);
         }
       } else {
-        if (second_match.matches_head) {
+        if (second_match!.matches_head) {
           // >>>> F >>>> --- >>>> S >>>>
           appendChain(F, S);
         } else {
@@ -216,9 +207,9 @@ class SegmentChainer {
 
   bool setMatch(int index, bool matchesHead, bool matchesPt1) {
     // return true if we've matched twice
-    next_match.index = index;
-    next_match.matches_head = matchesHead;
-    next_match.matches_pt1 = matchesPt1;
+    next_match!.index = index;
+    next_match!.matches_head = matchesHead;
+    next_match!.matches_pt1 = matchesPt1;
 
     if (next_match == first_match) {
       next_match = second_match;

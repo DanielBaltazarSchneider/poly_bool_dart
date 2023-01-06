@@ -1,4 +1,4 @@
-//@dart=2.11
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dart_jts/dart_jts.dart';
 import 'package:poly_bool_dart/polybool.dart';
@@ -39,15 +39,15 @@ void main() {
       'differenceRev': PolyBool().polygon(PolyBool().selectDifferenceRev(comb)),
       'xor': PolyBool().polygon(PolyBool().selectXor(comb))
     };
-    print(result['union'].regions);
+    print(result['union']!.regions);
     print('*********');
-    print(result['intersect'].regions);
+    print(result['intersect']!.regions);
     print('*********');
-    print(result['difference'].regions);
+    print(result['difference']!.regions);
     print('*********');
-    print(result['differenceRev'].regions);
+    print(result['differenceRev']!.regions);
     print('*********');
-    print(result['xor'].regions);
+    print(result['xor']!.regions);
     print('*********');
   });
 }

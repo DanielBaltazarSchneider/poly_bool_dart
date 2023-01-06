@@ -1,5 +1,4 @@
 // MIT License
-//@dart=2.11
 import 'intersector.dart';
 import 'segment_chainer.dart';
 import 'segment_selector.dart';
@@ -29,10 +28,7 @@ class PolyBool {
     );
 
     return new CombinedSegmentLists(
-        combined: i.calculateXD(
-            segments1, segments1.inverted, segments2, segments2.inverted),
-        inverted1: segments1.inverted,
-        inverted2: segments2.inverted);
+        combined: i.calculateXD(segments1, segments1.inverted, segments2, segments2.inverted), inverted1: segments1.inverted, inverted2: segments2.inverted);
   }
 
   SegmentList selectUnion(CombinedSegmentLists combined) {
@@ -100,8 +96,7 @@ class PolyBool {
     return _operate(poly1, poly2, selectXor);
   }
 
-  RegionPolygon _operate(
-      RegionPolygon poly1, RegionPolygon poly2, Selector selector) {
+  RegionPolygon _operate(RegionPolygon poly1, RegionPolygon poly2, Selector selector) {
     var seg1 = segments(poly1);
     var seg2 = segments(poly2);
     var comb = combine(seg1, seg2);

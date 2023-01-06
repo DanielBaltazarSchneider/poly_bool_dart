@@ -1,4 +1,3 @@
-//@dart=2.11
 // provides the raw computation functions that takes epsilon into account
 //
 // zero is defined to be between (-epsilon, epsilon) exclusive
@@ -13,8 +12,7 @@ import 'types.dart';
 class Epsilon {
   static const eps = 0.0000000001; // sane default? sure why not
 
-  bool pointAboveOrOnLine(
-      JTS.Coordinate pt, JTS.Coordinate left, JTS.Coordinate right) {
+  bool pointAboveOrOnLine(JTS.Coordinate pt, JTS.Coordinate left, JTS.Coordinate right) {
     var Ax = left.x;
     var Ay = left.y;
     var Bx = right.x;
@@ -29,8 +27,7 @@ class Epsilon {
     return ABx * (Cy - Ay) - ABy * (Cx - Ax) >= -eps * AB;
   }
 
-  bool pointBetween(
-      JTS.Coordinate p, JTS.Coordinate left, JTS.Coordinate right) {
+  bool pointBetween(JTS.Coordinate p, JTS.Coordinate left, JTS.Coordinate right) {
     // p must be collinear with left->right
     // returns false if p == left, p == right, or left == right
     if (pointsSame(p, left) || pointsSame(p, right)) return false;
@@ -61,13 +58,11 @@ class Epsilon {
 
   int pointsCompare(JTS.Coordinate p1, JTS.Coordinate p2) {
     // returns -1 if p1 is smaller, 1 if p2 is smaller, 0 if equal
-    if (pointsSameX(p1, p2))
-      return pointsSameY(p1, p2) ? 0 : (p1.y < p2.y ? -1 : 1);
+    if (pointsSameX(p1, p2)) return pointsSameY(p1, p2) ? 0 : (p1.y < p2.y ? -1 : 1);
     return p1.x < p2.x ? -1 : 1;
   }
 
-  bool pointsCollinear(
-      JTS.Coordinate pt1, JTS.Coordinate pt2, JTS.Coordinate pt3) {
+  bool pointsCollinear(JTS.Coordinate pt1, JTS.Coordinate pt2, JTS.Coordinate pt3) {
     // does pt1->pt2->pt3 make a straight line?
     // essentially this is just checking to see if the slope(pt1->pt2) === slope(pt2->pt3)
     // if slopes are equal, then they must be collinear, because they share pt2
@@ -89,8 +84,7 @@ class Epsilon {
     return (dx1 * dy2 - dx2 * dy1).abs() <= eps * (n1 + n2);
   }
 
-  Map<bool, Intersection> linesIntersectAsMap(JTS.Coordinate a0,
-      JTS.Coordinate a1, JTS.Coordinate b0, JTS.Coordinate b1) {
+  Map<bool, Intersection> linesIntersectAsMap(JTS.Coordinate a0, JTS.Coordinate a1, JTS.Coordinate b0, JTS.Coordinate b1) {
     Intersection intersection;
     // returns false if the lines are coincident (e.g., parallel or on top of each other)
     //

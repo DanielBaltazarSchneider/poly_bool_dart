@@ -1,5 +1,3 @@
-//@dart=2.11
-
 import 'package:dart_jts/dart_jts.dart' as JTS;
 
 import 'epsilon.dart';
@@ -7,30 +5,22 @@ import 'types.dart';
 
 class EventNode {
   bool isStart;
-  JTS.Coordinate pt;
-  Segment seg;
+  JTS.Coordinate? pt;
+  Segment? seg;
   bool primary;
-  EventNode other;
-  StatusNode status;
+  EventNode? other;
+  StatusNode? status;
 
-  EventNode next;
-  EventNode prev;
+  EventNode? next;
+  EventNode? prev;
 
-  EventNode(
-      {this.isStart = false,
-      this.pt,
-      this.seg,
-      this.primary = false,
-      this.other,
-      this.status,
-      this.next,
-      this.prev});
+  EventNode({this.isStart = false, this.pt, this.seg, this.primary = false, this.other, this.status, this.next, this.prev});
 
   void remove() {
-    prev.next = next;
+    prev?.next = next;
 
     if (next != null) {
-      next.prev = prev;
+      next?.prev = prev;
     }
 
     prev = null;
@@ -39,16 +29,16 @@ class EventNode {
 }
 
 class StatusNode {
-  EventNode ev;
+  EventNode? ev;
 
-  StatusNode next;
-  StatusNode prev;
+  StatusNode? next;
+  StatusNode? prev;
 
   void remove() {
-    prev.next = next;
+    prev?.next = next;
 
     if (next != null) {
-      next.prev = prev;
+      next?.prev = prev;
     }
 
     prev = null;
@@ -59,25 +49,25 @@ class StatusNode {
 }
 
 class StatusLinkedList {
-  StatusNode root = new StatusNode();
+  StatusNode? root = new StatusNode();
 
-  StatusNode get head {
-    return root.next;
+  StatusNode? get head {
+    return root?.next;
   }
 
   bool get isEmpty {
-    return root.next == null;
+    return root?.next == null;
   }
 
-  bool exists(StatusNode node) {
+  bool exists(StatusNode? node) {
     if (node == null || node == root) return false;
 
     return true;
   }
 
-  Transition findTransition(EventNode ev) {
-    var prev = root;
-    var here = root.next;
+  Transition? findTransition(EventNode ev) {
+    StatusNode? prev = root;
+    StatusNode? here = root?.next;
 
     while (here != null) {
       if (findTransitionPredicate(ev, here)) break;
@@ -86,11 +76,7 @@ class StatusLinkedList {
       here = here.next;
     }
 
-    return Transition(
-        before: prev == root ? null : prev.ev,
-        after: here != null ? here.ev : null,
-        prev: prev,
-        here: here);
+    return Transition(before: prev == root ? null : prev?.ev, after: here?.ev, prev: prev, here: here);
   }
 
   StatusNode insert(Transition surrounding, EventNode ev) {
@@ -101,7 +87,7 @@ class StatusLinkedList {
 
     node.prev = prev;
     node.next = here;
-    prev.next = node;
+    prev?.next = node;
 
     if (here != null) {
       here.prev = node;
@@ -111,19 +97,18 @@ class StatusLinkedList {
   }
 
   bool findTransitionPredicate(EventNode ev, StatusNode here) {
-    var comp = statusCompare(ev, here.ev);
+    var comp = statusCompare(ev, here.ev!);
     return comp > 0;
   }
 
   int statusCompare(EventNode ev1, EventNode ev2) {
-    var a1 = ev1.seg.start;
-    var a2 = ev1.seg.end;
-    var b1 = ev2.seg.start;
-    var b2 = ev2.seg.end;
+    var a1 = ev1.seg!.start;
+    var a2 = ev1.seg!.end;
+    var b1 = ev2.seg!.start;
+    var b2 = ev2.seg!.end;
 
     if (Epsilon().pointsCollinear(a1, b1, b2)) {
-      if (Epsilon().pointsCollinear(a2, b1, b2))
-        return 1; //eventCompare(true, a1, a2, true, b1, b2);
+      if (Epsilon().pointsCollinear(a2, b1, b2)) return 1; //eventCompare(true, a1, a2, true, b1, b2);
 
       return Epsilon().pointAboveOrOnLine(a2, b1, b2) ? 1 : -1;
     }
@@ -133,10 +118,10 @@ class StatusLinkedList {
 }
 
 class EventLinkedList {
-  EventNode root = new EventNode();
+  EventNode root = EventNode();
 
   EventNode get head {
-    return root.next;
+    return root.next!;
   }
 
   bool get isEmpty {
@@ -151,7 +136,7 @@ class EventLinkedList {
       if (insertBeforePredicate(here, node, other_pt)) {
         node.prev = here.prev;
         node.next = here;
-        here.prev.next = node;
+        here.prev!.next = node;
         here.prev = node;
 
         return;
@@ -166,17 +151,14 @@ class EventLinkedList {
     node.next = null;
   }
 
-  bool insertBeforePredicate(
-      EventNode here, EventNode ev, JTS.Coordinate other_pt) {
+  bool insertBeforePredicate(EventNode here, EventNode ev, JTS.Coordinate other_pt) {
     // should ev be inserted before here?
-    var comp = eventCompare(
-        ev.isStart, ev.pt, other_pt, here.isStart, here.pt, here.other.pt);
+    var comp = eventCompare(ev.isStart, ev.pt!, other_pt, here.isStart, here.pt!, here.other!.pt!);
 
     return comp < 0;
   }
 
-  int eventCompare(bool p1_isStart, JTS.Coordinate p1_1, JTS.Coordinate p1_2,
-      bool p2_isStart, JTS.Coordinate p2_1, JTS.Coordinate p2_2) {
+  int eventCompare(bool p1_isStart, JTS.Coordinate p1_1, JTS.Coordinate p1_2, bool p2_isStart, JTS.Coordinate p2_1, JTS.Coordinate p2_2) {
     // compare the selected points first
     // compare the selected points first
     var comp = Epsilon().pointsCompare(p1_1, p2_1);
@@ -184,8 +166,7 @@ class EventLinkedList {
 
     // the selected points are the same
 
-    if (Epsilon().pointsSame(
-        p1_2, p2_2)) // if the non-selected points are the same too...
+    if (Epsilon().pointsSame(p1_2, p2_2)) // if the non-selected points are the same too...
       return 0; // then the segments are equal
 
     if (p1_isStart != p2_isStart) // if one is a start and the other isn't...

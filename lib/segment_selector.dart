@@ -1,4 +1,3 @@
-//@dart=2.11
 import 'build_log.dart';
 //
 // filter a list of segments based on boolean operations
@@ -7,17 +6,17 @@ import 'segment_fill.dart';
 import 'types.dart';
 
 class SegmentSelector {
-  static select(SegmentList segments, selection, BuildLog buildLog) {
-    var result = new SegmentList();
+  static select(SegmentList segments, selection, BuildLog? buildLog) {
+    var result = SegmentList();
 
     segments.forEach((seg) {
       var index = (seg.myFill.above ? 8 : 0) +
-          (seg.myFill.below ? 4 : 0) +
-          ((seg.otherFill != null && seg.otherFill.above) ? 2 : 0) +
-          ((seg.otherFill != null && seg.otherFill.below) ? 1 : 0);
+          (seg.myFill.below! ? 4 : 0) +
+          ((seg.otherFill != null && seg.otherFill!.above) ? 2 : 0) +
+          ((seg.otherFill != null && seg.otherFill!.below!) ? 1 : 0);
 
       if (selection[index] != 0) {
-        result.add(new Segment(
+        result.add(Segment(
             id: -1,
             start: seg.start,
             end: seg.end,
@@ -53,24 +52,7 @@ class SegmentSelector {
   //    1      1      0      1   =>   no                  0
   //    1      1      1      0   =>   no                  0
   //    1      1      1      1   =>   no                  0
-  static List<int> union_select_table = [
-    0,
-    2,
-    1,
-    0,
-    2,
-    2,
-    0,
-    0,
-    1,
-    0,
-    1,
-    0,
-    0,
-    0,
-    0,
-    0
-  ];
+  static List<int> union_select_table = [0, 2, 1, 0, 2, 2, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0];
 
   // primary & secondary
   // above1 below1 above2 below2    Keep?               Value
@@ -90,24 +72,7 @@ class SegmentSelector {
   //    1      1      0      1   =>   yes filled below    2
   //    1      1      1      0   =>   yes filled above    1
   //    1      1      1      1   =>   no                  0
-  static List<int> intersect_select_table = [
-    0,
-    0,
-    0,
-    0,
-    0,
-    2,
-    0,
-    2,
-    0,
-    0,
-    1,
-    1,
-    0,
-    2,
-    1,
-    0
-  ];
+  static List<int> intersect_select_table = [0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 1, 1, 0, 2, 1, 0];
 
   // primary - secondary
   // above1 below1 above2 below2    Keep?               Value
@@ -127,24 +92,7 @@ class SegmentSelector {
   //    1      1      0      1   =>   yes filled above    1
   //    1      1      1      0   =>   yes filled below    2
   //    1      1      1      1   =>   no                  0
-  static List<int> difference_select_table = [
-    0,
-    0,
-    0,
-    0,
-    2,
-    0,
-    2,
-    0,
-    1,
-    1,
-    0,
-    0,
-    0,
-    1,
-    2,
-    0
-  ];
+  static List<int> difference_select_table = [0, 0, 0, 0, 2, 0, 2, 0, 1, 1, 0, 0, 0, 1, 2, 0];
 
   // secondary - primary
   // above1 below1 above2 below2    Keep?               Value
@@ -164,24 +112,7 @@ class SegmentSelector {
   //    1      1      0      1   =>   no                  0
   //    1      1      1      0   =>   no                  0
   //    1      1      1      1   =>   no                  0
-  static List<int> differenceRev_select_table = [
-    0,
-    2,
-    1,
-    0,
-    0,
-    0,
-    1,
-    1,
-    0,
-    2,
-    0,
-    2,
-    0,
-    0,
-    0,
-    0
-  ];
+  static List<int> differenceRev_select_table = [0, 2, 1, 0, 0, 0, 1, 1, 0, 2, 0, 2, 0, 0, 0, 0];
 
   // primary ^ secondary
   // above1 below1 above2 below2    Keep?               Value
@@ -201,24 +132,7 @@ class SegmentSelector {
   //    1      1      0      1   =>   yes filled above    1
   //    1      1      1      0   =>   yes filled below    2
   //    1      1      1      1   =>   no                  0
-  static List<int> xor_select_table = [
-    0,
-    2,
-    1,
-    0,
-    2,
-    0,
-    0,
-    1,
-    1,
-    0,
-    0,
-    2,
-    0,
-    1,
-    2,
-    0
-  ];
+  static List<int> xor_select_table = [0, 2, 1, 0, 2, 0, 0, 1, 1, 0, 0, 2, 0, 1, 2, 0];
 
   static SegmentList union(SegmentList segments, BuildLog buildLog) {
     return select(segments, union_select_table, buildLog);
@@ -228,7 +142,7 @@ class SegmentSelector {
     return select(segments, difference_select_table, buildLog);
   }
 
-  static SegmentList intersect(SegmentList segments, BuildLog buildLog) {
+  static SegmentList intersect(SegmentList segments, BuildLog? buildLog) {
     return select(segments, intersect_select_table, buildLog);
   }
 
